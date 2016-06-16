@@ -1,8 +1,8 @@
-from pykowski.image import Image
+from pykowski.image import VoxelImage
 
 
 def main():
-    print "ello"
+    im = VoxelImage("data/ketton.tif")
 
 if __name__ == "__main__":
     main()

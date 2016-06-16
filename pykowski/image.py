@@ -1,10 +1,10 @@
-from tifffile import imread
+import tifffile
 from skimage.filters import gaussian
 
 
-class Image(object):
+class VoxelImage(object):
     def __init__(self, file_name):
-        self.image = imread(file_name)
+        self.image = tifffile.imread(file_name)
         self.blurred_image = None
 
     def apply_gaussian(self, sigma=1.0):
