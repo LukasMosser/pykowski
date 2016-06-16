@@ -1,6 +1,25 @@
 from os import chdir
 from shlex import split
 from subprocess import Popen
+from numpy.random import randint
+
+
+def unique_random_subsets(image, n_samples, dx):
+    unique_triplets = set()
+    for i in xrange(n_samples):
+        triplet = get_triplet(image, dx)
+        while triplet in unique_triplets:
+            triplet = get_triplet(image, dx)
+
+        unique_triplets.add(triplet)
+        yield triplet
+
+
+def get_triplet(image, dx):
+    x = randint(low=0, high=image.shape[0]-dx[0]-1)
+    y = randint(low=0, high=image.shape[1]-dx[1]-1)
+    z = randint(low=0, high=image.shape[1]-dx[1]-1)
+    return [x, y, z]
 
 
 def run_karambola(name, home):
