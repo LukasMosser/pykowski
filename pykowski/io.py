@@ -1,4 +1,5 @@
 import numpy as np
+from trimesh.io.export import export_mesh
 
 
 def import_ply(file_name):
@@ -38,6 +39,26 @@ def import_ply(file_name):
     faces = np.array(faces)
     vertices = np.array(vertices)
     return faces, vertices
+
+
+def write_poly_from_mesh(name, mesh, export_off=False):
+    vertices = mesh.vertices
+    faces = mesh.faces
+    if export_off:
+        export_success = export_mesh(mesh, name+".off", file_type='off')
+    try:
+        with open(name+".poly", "wb") as f:
+            f.write("POINTS\n")
+            for i, vertex in enumerate(vertices):
+                f.write(str(i+1)+": "+" ".join([str(val) for val in vertex])+"\n")
+
+            f.write("POLYS\n")
+            for j, face in enumerate(faces):
+                f.write(str(j+1)+": "+" ".join([str(val+1) for val in face])+" <\n")
+
+            f.write("END")
+    except IOError:
+        print "could not create file"
 
 
 def write_poly(file_name, vertices, faces):

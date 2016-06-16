@@ -13,6 +13,8 @@ class KarambolaResults(object):
         self.w200, self.w210, self.w220, self.w202 = None
         self.w300, self.w310 = None
 
+        self.tensors = None
+
         self.eigs = None
         self.eigs_w102, self.eigs_w202 = None
         self.beta_102, self.gamma_102 = None
@@ -121,6 +123,7 @@ class KarambolaResults(object):
                     new_values.append(val.replace("ERROR", "-9999999999.99"))
 
                 self.tensors[tensor_name] = np.array([float(val) for val in new_values]).reshape(3,3)
+
     def assign_tensors(self):
         self.w020 = self.tensors["w020"]
         self.w102 = self.tensors["w102"]
