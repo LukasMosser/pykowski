@@ -1,6 +1,7 @@
 import numpy as np
 
 
+
 class KarambolaResults(object):
     def __init__(self, direc):
         self.direc = direc
