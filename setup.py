@@ -7,6 +7,9 @@ setup(
     name='pykowski',
     version='0.1.0',
     author='Lukas Mosser',
-    packages=['pykowski'],
-    description='Computation of Minkowski Tensors in Python'
+    author_email='lukas.mosser@gmail.com',
+    packages=['pykowski', 'pykowski.tests'],
+    description='Computation of Minkowski Tensors in Python',
+    test_suite='pykowski.tests.get_suite'
+
 )
