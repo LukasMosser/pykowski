@@ -11,5 +11,5 @@ setup(
     packages=['pykowski', 'pykowski.tests'],
     description='Computation of Minkowski Tensors in Python',
     test_suite='pykowski.tests.get_suite',
-    install_requires=["numpy", "h5py", "trimesh", "scikit-image"]
+    install_requires=["numpy", "h5py", "trimesh", "scikit-image", "click", "tifffile"]
 )

@@ -1,5 +1,5 @@
 from shlex import split
-from subprocess import Popen
+from subprocess import Popen, PIPE
 from numpy.random import randint
 
 
@@ -24,6 +24,7 @@ def get_triplet(image, dx):
 def run_karambola(name, out_name):
     cmd_line = "karambola "+name+".poly --nolabels --force w000 --force w100 --force w200 --force w300 --force w010 --force w110 --force w210 --force w310 --force w020 --force w102 --force w120 --force w202 --force w220 --force w320 -o "+out_name
     args = split(cmd_line)
-    p = Popen(args)
-    p.communicate()
+
+    p = Popen(args, shell=False, stdout=PIPE, stderr=PIPE)
+    output, error = p.communicate()
     return True
