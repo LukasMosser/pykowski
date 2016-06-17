@@ -1,6 +1,5 @@
 import numpy as np
-
-
+import json
 
 class KarambolaResults(object):
     def __init__(self, direc):
@@ -22,12 +21,65 @@ class KarambolaResults(object):
 
         self.beta_202, self.gamma_202 = None
 
-        self.load_surface_results(self.direc)
-        self.load_w000_w100_w200_w300(self.direc)
-        self.load_w010_w110_w210_w310(self.direc)
-        self.load_tensors(self.direc)
+    def load_from_karambola_output(self, direc):
+        self.load_surface_results(direc)
+        self.load_w000_w100_w200_w300(direc)
+        self.load_w010_w110_w210_w310(direc)
+        self.load_tensors(direc)
         self.assign_tensors()
         self.compute_eigenvalues()
+
+    def write_to_json_format(self, name):
+        scalars = [self.w000, self.w100, self.w200, self.w300]
+        vectors = [self.w010, self.w110, self.w210, self.w310]
+        vectors = [list(vector) for vector in vectors]
+        tensors = [self.w020, self.w102, self.w220, self.w202]
+        tensors = [numpy_matrix_to_lol(tensor) for tensor in tensors]
+
+        json_dic = {}
+        json_dic["smallest_area"] = self.smallest_area
+        json_dic["largest_area"] = self.largest_area
+        json_dic["shortest_edge"] = self.shortest_edge
+        json_dic["longest_edge"] = self.longest_edge
+
+        json_dic["scalars"] = scalars
+        json_dic["vectors"] = vectors
+        json_dic["tensors"] = tensors
+
+        json.dumps(json_dic)
+        """
+        @TODO: write json dumps code
+        """
+
+    def load_from_json_format(self, name):
+        """
+        @TODO: write loads json dump code
+        :param name:
+        :return:
+        """
+        json_dic = {}
+        self.smallest_area = json_dic["smallest_area"]
+        self.largest_area = json_dic["largest_area"]
+        self.shortest_edge = json_dic["shortest_edge"]
+        self.longest_edge = json_dic["longest_edge"]
+
+        self.w000, self.w100, self.w200, self.w300 = json_dic["scalars"]
+        vectors = np.array(json_dic["vectors"])
+        self.w010 = vectors[0]
+        self.w110 = vectors[1]
+        self.w210 = vectors[2]
+        self.w310 = vectors[3]
+
+        tensors = np.array(json_dic["tensors"])
+        self.w020 = tensors[0]
+        self.w102 = tensors[1]
+        self.w220 = tensors[2]
+        self.w202 = tensors[3]
+
+        self.compute_eigenvalues()
+
+        ########################
+        json.loads("file")
 
     def load_surface_results(self, direc):
         temp = []
@@ -140,3 +192,10 @@ class KarambolaResults(object):
         self.eigs_w202 = np.linalg.eig(self.w202)
         self.beta_202 = min(self.eigs_w202[0])/max(self.eigs_w202[0])
         self.gamma_202 = sorted(self.eigs_w202[0])[1]/max(self.eigs_w202[0])
+
+
+def numpy_matrix_to_lol(matrix):
+    temp = []
+    for row in matrix:
+        temp.append(list(row))
+    return temp
