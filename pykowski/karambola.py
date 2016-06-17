@@ -2,26 +2,34 @@ import numpy as np
 import json
 
 class KarambolaResults(object):
-    def __init__(self, direc):
-        self.direc = direc
-        self.shortest_edge, self.longest_edge = None
-        self.smallest_area, self.largest_area = None
+    def __init__(self):
+        self.direc = None
+
+        self.image_name = None
+        self.indices = None
+        self.dx = None
+
+        self.shortest_edge = self.longest_edge = None
+        self.smallest_area =self.largest_area = None
         self.surface_type = None
 
-        self.w000, self.w010, self.w020 = None
-        self.w100, self.w110, self.w120, self.w102 = None
-        self.w200, self.w210, self.w220, self.w202 = None
-        self.w300, self.w310 = None
+        self.w000 = self.w010 = self.w020 = None
+        self.w100 = self.w110 = self.w120 = self.w102 = None
+        self.w200 = self.w210 = self.w220 = self.w202 = None
+        self.w300 = self.w310 = None
 
         self.tensors = None
 
         self.eigs = None
-        self.eigs_w102, self.eigs_w202 = None
-        self.beta_102, self.gamma_102 = None
+        self.eigs_w102 = self.eigs_w202 = None
+        self.beta_102 = self.gamma_102 = None
 
-        self.beta_202, self.gamma_202 = None
+        self.beta_202 = self.gamma_202 = None
 
-    def load_from_karambola_output(self, direc):
+    def load_from_karambola_output(self, direc, image_name, ind, dx):
+        self.image_name = image_name
+        self.indices = ind
+        self.dx = dx
         self.load_surface_results(direc)
         self.load_w000_w100_w200_w300(direc)
         self.load_w010_w110_w210_w310(direc)
@@ -37,6 +45,10 @@ class KarambolaResults(object):
         tensors = [numpy_matrix_to_lol(tensor) for tensor in tensors]
 
         json_dic = {}
+        json_dic["image_name"] = self.image_name
+        json_dic["indices"] = self.indices
+        json_dic["dx"] = self.dx
+
         json_dic["smallest_area"] = self.smallest_area
         json_dic["largest_area"] = self.largest_area
         json_dic["shortest_edge"] = self.shortest_edge
@@ -46,18 +58,18 @@ class KarambolaResults(object):
         json_dic["vectors"] = vectors
         json_dic["tensors"] = tensors
 
-        json.dumps(json_dic)
-        """
-        @TODO: write json dumps code
-        """
+        with open(name, 'wb') as f:
+            json.dump(json_dic, f)
 
     def load_from_json_format(self, name):
-        """
-        @TODO: write loads json dump code
-        :param name:
-        :return:
-        """
-        json_dic = {}
+
+        with open(name, 'rb') as f:
+            json_dic = json.load(f)
+
+        self.image_name = json_dic["image_name"]
+        self.indices = json_dic["indices"]
+        self.dx = json_dic["dx"]
+
         self.smallest_area = json_dic["smallest_area"]
         self.largest_area = json_dic["largest_area"]
         self.shortest_edge = json_dic["shortest_edge"]
@@ -77,9 +89,6 @@ class KarambolaResults(object):
         self.w202 = tensors[3]
 
         self.compute_eigenvalues()
-
-        ########################
-        json.loads("file")
 
     def load_surface_results(self, direc):
         temp = []
